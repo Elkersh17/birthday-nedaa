@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Neda ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+/* password */
+#lockScreen {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+#lockScreen h2 {
+  color: white;
+}
+
+#lockScreen input {
+  padding: 10px;
+  font-size: 18px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  text-align: center;
+}
+
+#lockScreen button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: red;
+  color: white;
+  font-size: 16px;
+}
+
+/* slides */
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: all 1s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* text */
+.text {
+  position: absolute;
+  bottom: 15%;
+  width: 90%;
+  left: 5%;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  line-height: 1.6;
+  text-shadow: 0 0 10px black;
+}
+
+/* progress */
+.progress {
+  position: absolute;
+  top: 0;
+  height: 4px;
+  background: white;
+  width: 0%;
+  z-index: 10;
+}
+
+/* hearts */
+.heart {
+  position: fixed;
+  color: red;
+  font-size: 20px;
+  animation: floatUp 5s linear infinite;
+}
+
+@keyframes floatUp {
+  0% {transform: translateY(100vh); opacity: 1;}
+  100% {transform: translateY(-10vh); opacity: 0;}
+}
+
+/* ending */
+.ending {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: red;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="lockScreen">
+  <h2>Enter her birthday 🎂</h2>
+  <input type="password" id="passInput" placeholder="DDMMYYYY">
+  <button onclick="checkPass()">Open ❤️</button>
+</div>
+
+<div class="progress" id="progress"></div>
+
+<!-- SLIDES -->
+<div class="slide active">
+  <img src="jpg1.jpeg">
+  <div class="text" data-text="كل سنه وانت طيبه يا يعشق روحي يا نداء ❤️"></div>
+</div>
+
+<div class="slide">
+  <img src="jpg2.jpeg">
+  <div class="text" data-text="افتكرت اول عيد ميلاد ليك واحنا لسه صحاب... كان ليك لحظه سبيشال في كل حياتي... بجد بحبك ومقدرش اعيش منغيرك ❤️"></div>
+</div>
+
+<div class="slide">
+  <img src="jpg3.jpeg">
+  <div class="text" data-text="كل سنه وانت معايا... كل سنه وانت حبي الاول والاخير... انت كل حاجه ليا يا نداء ❤️"></div>
+</div>
+
+<div class="slide ending">
+  LIKE THE SHARK LOVE THE BLOOD ❤️
+</div>
+
+<!-- MUSIC -->
+<iframe width="0" height="0"
+src="https://www.youtube.com/embed/xvDyGpEEcfM?autoplay=1&loop=1&playlist=xvDyGpEEcfM"
+allow="autoplay"></iframe>
+
+<script>
+const PASSWORD = "352003"; // غيره لو عايز
+
+function checkPass() {
+  let input = document.getElementById("passInput").value;
+  if (input === PASSWORD) {
+    document.getElementById("lockScreen").style.display = "none";
+  } else {
+    alert("غلط 😅");
+  }
+}
+
+/* slides */
+let slides = document.querySelectorAll(".slide");
+let index = 0;
+let duration = 6000;
+let startX = 0;
+
+function typeText(el) {
+  let text = el.getAttribute("data-text");
+  el.innerHTML = "";
+  let i = 0;
+  function typing() {
+    if (i < text.length) {
+      el.innerHTML += text[i++];
+      setTimeout(typing, 40);
+    }
+  }
+  typing();
+}
+
+function showSlide(i) {
+  slides.forEach(s => s.classList.remove("active"));
+  slides[i].classList.add("active");
+
+  let t = slides[i].querySelector(".text");
+  if (t) typeText(t);
+
+  document.getElementById("progress").style.width = "0%";
+
+  let start = Date.now();
+
+  function animate() {
+    let percent = ((Date.now() - start) / duration) * 100;
+    document.getElementById("progress").style.width = percent + "%";
+
+    if (percent < 100) {
+      requestAnimationFrame(animate);
+    } else {
+      nextSlide();
+    }
+  }
+
+  animate();
+}
+
+function nextSlide() {
+  index = (index + 1) % slides.length;
+  showSlide(index);
+}
+
+/* swipe */
+document.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+  if (startX - endX > 50) nextSlide();
+});
+
+/* click */
+document.body.onclick = nextSlide;
+
+/* hearts */
+setInterval(() => {
+  let h = document.createElement("div");
+  h.className = "heart";
+  h.innerHTML = "❤️";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 5000);
+}, 300);
+
+/* start */
+showSlide(index);
+</script>
+
+</body>
+</html>
